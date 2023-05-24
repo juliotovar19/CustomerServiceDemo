@@ -115,7 +115,7 @@ export class CustomerListActionsComponent implements AfterViewInit {
           
       }
     });
-    
+    sessionStorage.clear();
   } 
 
 
@@ -162,6 +162,8 @@ export class CustomerListActionsComponent implements AfterViewInit {
      this.dataSource.data.at(index).lastName = this.currentCustomer.lastName;
      this.dataSource.data.at(index).email = this.currentCustomer.email;
      this.dataSource.data.at(index).isEdit = false;
+
+     sessionStorage.clear();
   }
 setSession(customer: Customer){
   sessionStorage.setItem(customer.id.toString(), JSON.stringify(customer))
