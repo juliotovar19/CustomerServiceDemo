@@ -5,6 +5,7 @@ using CustomerWebApi.Entities.Models;
 using CustomerWebApi.Paging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CustomerWebApi.Controllers
 {
@@ -29,8 +30,18 @@ namespace CustomerWebApi.Controllers
             try
             {
                 var customers = await _repositoryManager.Customer.GetAllCustomers(pagingParameters);
-                var customersResult = _mapper.Map<IEnumerable<CustomerDto>>(customers);
-                return Ok(customersResult);
+                var metadata = new
+                {
+                    customers.TotalCount,
+                    customers.PageSize,
+                    customers.CurrentPage,
+                    customers.TotalPages,
+                    customers.HasNext,
+                    customers.HasPrevious
+                };
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+                return Ok(customers);
             }
             catch (Exception ex)
             {
@@ -70,7 +81,7 @@ namespace CustomerWebApi.Controllers
                 {
                     return BadRequest("Customer object is null");
                 }
-
+                customer.Created = DateTime.Now;
                 if (!ModelState.IsValid)
                 {
                     return BadRequest("Invalid model object");
@@ -100,7 +111,7 @@ namespace CustomerWebApi.Controllers
                 {
                     return BadRequest("Customer object is null");
                 }
-
+                customer.Updated = DateTime.Now;
                 if (!ModelState.IsValid)
                 {
                     return BadRequest("Invalid model object");

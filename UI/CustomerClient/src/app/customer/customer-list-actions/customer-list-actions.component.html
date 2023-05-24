@@ -1,0 +1,80 @@
+<div class="row">
+  <div class="offset-10 col-md-2 mt-2"> 
+    <button type="button" class="btn btn-outline-primary " [routerLink]="['/customer/create']">Create customer</button>
+  </div>
+ <br>
+
+<div class="mat-elevation-z8">
+ 
+<table mat-table [dataSource]="dataSource">
+
+  <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
+    <th mat-header-cell *matHeaderCellDef [ngSwitch]="col.key">
+  
+      <span *ngSwitchDefault>{{ col.label }}</span>
+    </th>
+    <td mat-cell *matCellDef="let customer; let i =  index ">
+      <div [ngSwitch]="col.type" *ngIf="!customer.isEdit">
+      
+        <div class="btn-edit" *ngSwitchCase="'isEdit'">
+        
+
+          <button mat-icon-button class="material-icons app-toolbar-menu save-button"
+          matTooltip="Edit" color="primary" (click)="customer.isEdit = !customer.isEdit" (click)="setSession(customer)">
+          <mat-icon>edit</mat-icon>
+          </button>
+
+          <button mat-icon-button class="material-icons app-toolbar-menu delete-button"
+          matTooltip="Delete" (click)="openDialog(customer.id)" color="warn">
+          <mat-icon>delete</mat-icon>
+      </button>
+
+        </div>
+        <span *ngSwitchCase="'date'">
+          {{ customer[col.key] | date: 'yyyy/MM/dd HH:mm' }}
+        </span>
+        <span *ngSwitchDefault>
+          {{ customer[col.key] }}
+        </span>
+      </div>
+      <div [ngSwitch]="col.type" *ngIf="customer.isEdit">
+   
+        <div class="btn-edit" *ngSwitchCase="'isEdit'">
+     
+          <button mat-icon-button class="material-icons app-toolbar-menu save-button"
+          matTooltip="Save Changes" (click)="editRow(customer)" [disabled]="disableSubmit(customer.id)" color="primary">
+          <mat-icon>check_circle</mat-icon>
+      </button>
+
+      <button mat-icon-button class="material-icons app-toolbar-menu cancel-button"
+                                    matTooltip="Cancel Changes" color="warn"
+                                    (click)="cancelSubmit(customer.id, i)"
+                                    >
+                                    <mat-icon>cancel</mat-icon>
+                                </button>
+        </div>
+        <mat-form-field class="form-input" *ngSwitchDefault>
+          <input
+            matInput
+            [required]="col.required"
+            [pattern]="col.pattern"
+            [type]="col.type"
+            [readonly]="col.readonly"
+            [(ngModel)]="customer[col.key]"
+            (change)="inputHandler($event, customer.id, col.key)"
+          />
+        </mat-form-field>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+</div>
+
+
+<mat-paginator  #paginator [length]="totalData"[pageSizeOptions]="pageSizes" showFirstLastButtons></mat-paginator>
+
+</div>
