@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace CustomerWebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/customer")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -128,7 +128,7 @@ namespace CustomerWebApi.Controllers
                 _repositoryManager.Customer.UpdateCustomer(customerEntity);
                 await _repositoryManager.SaveAsync();
 
-                return NoContent();
+                return Ok(customerEntity);
             }
             catch (Exception ex)
             {

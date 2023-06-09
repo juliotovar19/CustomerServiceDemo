@@ -98,8 +98,9 @@ export class CustomerListActionsComponent implements AfterViewInit {
  
       this.repository.updateCustomer(customerForUpd)
     .subscribe({
-      next: (c: CustomerForUpdate) => {
+      next: (result) => {
         customerRow.isEdit = false;
+        customerRow.updated = result.updated;
         this.toastr.success('Customer updated', 'Success');
       },
       error: (err: HttpErrorResponse) => {
